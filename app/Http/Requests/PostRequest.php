@@ -32,8 +32,13 @@ class PostRequest extends FormRequest
         ]; */
 
         return [
-            'title' => ['required', 'unique:posts', 'max:150'],
-            'category_id' => ['nullable', 'exists:categories,id'],
+            'title' => ['required', 'title' => 
+            [
+                'required', Rule::unique('posts', 'title')->ignore($this->post)
+            ]
+        ],
+            'category_id' => ['nullable','exists:categories,id'],
+            'tags' => ['exists:tags,id'],  // bug da risolvere
             'cover_image' => ['nullable'],
             'content' => ['nullable']
         ];

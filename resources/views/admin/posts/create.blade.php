@@ -11,7 +11,7 @@
         <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" placeholder="Learn php article" aria-describedby="titleHelper" value="{{old('title')}}">
         <small id="titleHelper" class="text-muted">Type the post title, max: 150 carachters</small>
     </div>
-    <!-- TODO: Change to input type file -->
+
     <div class="mb-4">
         <label for="cover_image">cover_image</label>
         <input type="text" name="cover_image" id="cover_image" class="form-control  @error('cover_image') is-invalid @enderror" placeholder="Learn php article" aria-describedby="cover_imageHelper" value="{{old('cover_image')}}">
@@ -27,6 +27,19 @@
             @endforeach
         </select>
     </div>
+    <div class="form-group">
+        <label for="tags">Tags</label>
+        <select multiple class="form-control" name="tags[]" id="tags">
+            @if($tags)
+            @foreach($tags as $tag)
+            <option value="{{$tag->id}}">{{$tag->name}}</option>
+            @endforeach
+            @endif
+        </select>
+    </div>
+    @error('tags')
+    <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
     <div class="mb-4">
         <label for="content">Content</label>
         <textarea class="form-control  @error('content') is-invalid @enderror" name="content" id="content" rows="4">
