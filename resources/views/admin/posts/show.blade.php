@@ -9,7 +9,17 @@
     <div class="post-data px-4">
         <h1>{{$post->title}}</h1>
         <div class="metadata">
-            Category: {{$post->category ? $post->category->name : 'Uncategorized'}}
+            <strong>Category: </strong>{{$post->category ? $post->category->name : 'No Category'}}
+        </div>
+        <div class="tags">
+            <strong>Tags:</strong>
+            @if (count($post->tags) > 0)
+            @foreach($post->tags as $tag)
+            #{{$tag->name}}
+            @endforeach
+            @else
+            NO TAG
+            @endif
         </div>
         <div class="content">
             {{$post->content}}
