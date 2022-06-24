@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
@@ -31,8 +32,9 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
         //dd($categories);
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -45,20 +47,16 @@ class PostController extends Controller
     {
         //dd($request->all());
 
-        // Validate data
+        // Validate data and tag
         $val_data = $request->validated();
-        //dd($val_data);
-        // se l'id esiste tra gli id della tabelal categories
-
-
+        
         // Gererate the slug
         $slug = Post::generateSlug($request->title);
         $val_data['slug'] = $slug;
 
-        //dd($val_data);
-
         // create the resource
-        Post::create($val_data);
+        $new_post = Post::create($val_data);
+        $new_post->tags()->attach($request->tags);
         // redirect to a get route
         return redirect()->route('admin.posts.index')->with('message', 'Post Created Successfully');
     }
@@ -85,8 +83,9 @@ class PostController extends Controller
 
 
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.edit', compact('post', 'categories'));
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -114,6 +113,8 @@ class PostController extends Controller
         // update the resource
         $post->update($val_data);
 
+        //Sync tags
+        $post->tags()->sync($request->tags);
         // redirect to get route
         return redirect()->route('admin.posts.index')->with('message', "$post->title updated successfully");
     }
