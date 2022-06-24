@@ -35,7 +35,7 @@
             <option value="{{$category->id}}" {{$category->id == old('category_id', $post->category  ? $post->category->id : '') ? 'selected' : ''}}>{{$category->name}}</option>
             @empty
             <option value="" disabled>No categories to select</option>
-            @endforeach
+            @endforelse
         </select>
         <!-- Error validation -->
         @error('title')
