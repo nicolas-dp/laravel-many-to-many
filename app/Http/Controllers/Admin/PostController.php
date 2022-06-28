@@ -87,6 +87,10 @@ class PostController extends Controller
         // Creare la resource
         $new_post = Post::create($val_data);
         $new_post->tags()->attach($request->tags);
+
+        //invia mail usando l'istanza dell'utente
+        Mail::to($request->user())->send(new NewPostCreated($new_post));
+
         // Redirect to a get route
         return redirect()->route('admin.posts.index')->with('message', 'Post Created Successfully');
     }
@@ -160,6 +164,9 @@ class PostController extends Controller
 
         //Sync tags
         $post->tags()->sync($request->tags);
+
+        Mail::to('admin@boolpress.it')->send(new PostUpdatedAdminMessage($post));
+        
         // redirect to get route
         return redirect()->route('admin.posts.index')->with('message', "$post->title updated successfully");
     }
@@ -172,7 +179,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        
+
         //dd($post);
         Storage::delete($post->cover_image);
         //dd($post);
