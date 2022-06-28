@@ -145,7 +145,7 @@ class PostController extends Controller
             Storage::delete($post->cover_image);
 
             //Lo salviamo nel filesystem e recupero il percorso / path
-            $path = Storage::put('post_images', $request->cover_image);
+            $path = Storage::put('post_image', $request->cover_image);
             //ddd($path);
 
             //Passiamo il percorso/path all'array con i dati validati
@@ -172,8 +172,8 @@ class PostController extends Controller
     {
         //
         //dd($post);
-        /* Storage::delete($post); */
-        //dd($post);
+        Storage::delete($post->cover_image);
+        dd($post->delete());
         $post->delete();
         return redirect()->route('admin.posts.index')->with('message', "$post->title deleted successfully");
     }
