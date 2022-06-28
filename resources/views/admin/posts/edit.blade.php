@@ -6,7 +6,7 @@
 
 <h2 class="py-4">Edit {{$post->title}}</h2>
 @include('partials.errors')
-<form action="{{route('admin.posts.update', $post->slug)}}" method="post">
+<form action="{{route('admin.posts.update', $post->slug)}}" method="post" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="mb-4">

@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Post;
-use App\Models\Category;
-use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Mail\NewPostCreated;
+use App\Mail\PostUpdatedAdminMessage;
+use App\Models\Category;
+use App\Models\Tag;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Exists;
 
 class PostController extends Controller
 {
@@ -21,6 +26,8 @@ class PostController extends Controller
     {
         $posts = Post::orderByDesc('id')->get();
         //dd($posts);
+        // per far vedere solo i post dell'utente
+        $post = Auth::user()->posts;
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -49,15 +56,36 @@ class PostController extends Controller
 
         // Validate data and tag
         $val_data = $request->validated();
-        
+
         // Gererate the slug
         $slug = Post::generateSlug($request->title);
         $val_data['slug'] = $slug;
 
-        // create the resource
+        // assegniamo un post all'utente
+        $val_data['user_id'] = Auth::id();
+
+        /* Opzione in plain PHP */
+        // array_key_exists('cover_image', $request->all())
+
+        //Verifichiamo se è contenuto un file nella cover_image
+        if ($request->hasFile('cover_image')) {
+            //valida il file
+            $request->validate([
+                'cover_image' => 'nullable|image|max:500'
+            ]);
+            //Lo salviamo nel filesystem e recuperiamo il percorso
+            $path = Storage::put('post_image', $request->cover_image);
+
+            //ddd($path);
+
+            //Passiamo il percorso nell'array con i dati validati
+            $val_data['cover_image'] = $path;
+        }
+        dd($path);
+        // Creare la resource
         $new_post = Post::create($val_data);
         $new_post->tags()->attach($request->tags);
-        // redirect to a get route
+        // Redirect to a get route
         return redirect()->route('admin.posts.index')->with('message', 'Post Created Successfully');
     }
 
@@ -95,21 +123,36 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
-        /*Validation unique*/
-        $val_data = $request->validate([
-            'title' => ['required', Rule::unique('posts')->ignore($post)],
-            'category_id' => 'nullable|exists:categories,id',
-            'cover_image' => 'nullable',
-            'content' => 'nullable'
-        ]);
+        /*Validation*/
+        $val_data = $request->validated();
 
 
         // Gererate the slug
         $slug = Post::generateSlug($request->title);
 
         $val_data['slug'] = $slug;
+
+        // Update 
+        if ($request->hasFile('cover_image')) {
+            //Valida il file
+            $request->validate([
+                'cover_image' => 'nullable|image|max:500'
+            ]);
+
+            // elimina la vecchia foto 
+            Storage::delete($post->cover_image);
+
+            //Lo salviamo nel filesystem e recupero il percorso / path
+            $path = Storage::put('post_images', $request->cover_image);
+            //ddd($path);
+
+            //Passiamo il percorso/path all'array con i dati validati
+            $val_data['cover_image'] = $path;
+        }
+
+
         // update the resource
         $post->update($val_data);
 
@@ -128,7 +171,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
-
+        Storage::delete($post->cover_image);
         $post->delete();
         return redirect()->route('admin.posts.index')->with('message', "$post->title deleted successfully");
     }
