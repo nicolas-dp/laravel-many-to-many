@@ -39,7 +39,9 @@
                     NO TAG
                     @endif
                 </td>
-                <td><img width="150" src="{{$post->cover_image}}" alt="Cover image {{$post->title}}"></td>
+                <td class="align-middle">
+                    <img width="150" src="{{asset('storage/' . $post->cover_image)}}" alt="{{$post->title}}">
+                </td>
                 <td>
                     <a class="btn btn-primary text-white btn-sm" href="{{route('admin.posts.show', $post->slug)}}">View</a>
                     <a class="btn btn-secondary text-white btn-sm" href="{{route('admin.posts.edit', $post->slug)}}">Edit</a>
