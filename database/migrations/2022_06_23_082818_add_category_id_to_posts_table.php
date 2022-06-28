@@ -28,7 +28,7 @@ class AddCategoryIdToPostsTable extends Migration
     {
         Schema::table('posts', function (Blueprint $table) {
             $table->dropForeign('posts_category_id_foreign');//Toglie vincolo dalla colonna prima di poterla cancellare
-            $table->dropColumn('Category_id');
+            $table->dropColumn('category_id');
         });
     }
 }

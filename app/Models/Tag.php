@@ -9,7 +9,7 @@ class Tag extends Model
 {
     protected $fillable = ['name','slug'];
 
-    public function post(): BelongsToMany
+    public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class);
     }

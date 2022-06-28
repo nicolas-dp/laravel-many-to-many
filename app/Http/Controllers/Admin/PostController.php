@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Exists;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -170,7 +172,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        
         //dd($post);
         Storage::delete($post->cover_image);
         //dd($post);
