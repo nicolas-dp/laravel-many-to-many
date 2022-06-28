@@ -56,7 +56,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Delete current</h5>
+                                    <h5 class="modal-title">Elimina <strong>{{$post->title}}</strong></h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -66,7 +66,7 @@
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
 
-                                    <form action="{{route('admin.posts.destroy', $post->slug)}}" method="post">
+                                    <form action="{{route('admin.posts.destroy', $post)}}" method="post">
                                         @csrf
                                         @method('DELETE')
 

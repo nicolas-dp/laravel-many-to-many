@@ -81,7 +81,7 @@ class PostController extends Controller
             //Passiamo il percorso nell'array con i dati validati
             $val_data['cover_image'] = $path;
         }
-        dd($path);
+        //dd($path);
         // Creare la resource
         $new_post = Post::create($val_data);
         $new_post->tags()->attach($request->tags);
@@ -171,7 +171,9 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
-        Storage::delete($post->cover_image);
+        //dd($post);
+        /* Storage::delete($post); */
+        //dd($post);
         $post->delete();
         return redirect()->route('admin.posts.index')->with('message', "$post->title deleted successfully");
     }
