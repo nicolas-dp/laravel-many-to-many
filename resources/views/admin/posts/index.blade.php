@@ -66,7 +66,7 @@
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
 
-                                    <form action="{{route('admin.posts.destroy', $post)}}" method="post">
+                                    <form action="{{route('admin.posts.destroy', $post->slug)}}" method="post">
                                         @csrf
                                         @method('DELETE')
 

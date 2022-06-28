@@ -173,7 +173,7 @@ class PostController extends Controller
         //
         //dd($post);
         Storage::delete($post->cover_image);
-        dd($post->delete());
+        //dd($post);
         $post->delete();
         return redirect()->route('admin.posts.index')->with('message', "$post->title deleted successfully");
     }
